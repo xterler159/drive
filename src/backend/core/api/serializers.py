@@ -116,6 +116,12 @@ class ItemLightSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "path", "depth"]
 
 
+class ItemBulkDownloadSerializer(serializers.Serializer):
+    """Minimal item serializer to get only item's id"""
+
+    ids = serializers.ListField(child=serializers.UUIDField())
+
+
 class ItemAccessSerializer(serializers.ModelSerializer):
     """Serialize item accesses."""
 

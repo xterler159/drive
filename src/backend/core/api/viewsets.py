@@ -1840,6 +1840,16 @@ class ItemViewSet(
             headers={"Location": redirect_url},
         )
 
+    @drf.decorators.action(detail=False, methods=["post"], url_path="downloads")
+    def bulk_download(self, request, *args, **kwargs):
+        """
+        Bulk download in order to download n items.
+        """
+        serializer = serializers.ItemBulkDownloadSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        return drf.response.Response(status=status.HTTP_200_OK, data=serializer.data)
+
     @drf.decorators.action(detail=True, methods=["get"], url_path="export")
     def export(self, request, *args, **kwargs):
         """
