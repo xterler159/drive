@@ -9,6 +9,7 @@ import { useAppExplorer } from "@/features/explorer/components/app-view/AppExplo
 import { addToast } from "@/features/ui/components/toaster/Toaster";
 import { ToasterItem } from "@/features/ui/components/toaster/Toaster";
 import { useDeleteItem } from "@/features/explorer/hooks/useDeleteItem";
+import { useMutationBulkDownloadItems } from "@/features/explorer/hooks/useMutations";
 import { useEffect } from "react";
 import { ExplorerMoveFolder } from "@/features/explorer/components/modals/move/ExplorerMoveFolderModal";
 
@@ -61,6 +62,7 @@ export const ExplorerSelectionBarActions = () => {
   const moveModal = useModal();
 
   const { deleteItems, modals: deleteModals, isPending } = useDeleteItem();
+  const bulkDownloadItems = useMutationBulkDownloadItems();
 
   const handleDelete = async () => {
     let canDelete = true;
@@ -84,6 +86,12 @@ export const ExplorerSelectionBarActions = () => {
     }
   };
 
+  const handleBulkDownload = async () => {
+    const selectedItemsIds = selectedItems.map((item) => item.id);
+    const payload = { ids: selectedItemsIds };
+    await bulkDownloadItems.mutateAsync(payload);
+  };
+
   // Add event listener when component mounts and remove when unmounts
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -102,13 +110,15 @@ export const ExplorerSelectionBarActions = () => {
 
   return (
     <>
-      {/* <Button
-        onClick={handleClearSelection}
-        icon={<span className="material-icons">download</span>}
-        variant="tertiary"
-        size="small"
-        aria-label={t("explorer.selectionBar.download")}
-      /> */}
+      {selectedItems.length > 1 && (
+        <Button
+          onClick={() => handleBulkDownload()}
+          icon={<span className="material-icons">download</span>}
+          variant="tertiary"
+          size="small"
+          aria-label={t("explorer.selectionBar.download")}
+        />
+      )}
       <Button
         onClick={handleDelete}
         disabled={isPending}
