@@ -542,6 +542,13 @@ export class StandardDriver extends Driver {
   ): Promise<void> {
     await fetchAPI(`user-reconciliations/${userType}/${confirmationId}/`);
   }
+
+  async bulkDownload(itemIds: { ids: string[] }): Promise<void> {
+    await fetchAPI('items/downloads/', {
+      method: "POST",
+      body: JSON.stringify(itemIds)
+    })
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

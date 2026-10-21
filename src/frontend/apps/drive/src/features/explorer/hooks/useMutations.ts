@@ -300,3 +300,13 @@ export const useMutationDeleteFavoriteItem = () => {
     },
   });
 };
+
+export const useMutationBulkDownloadItems = () => {
+  const driver = getDriver()
+  
+  return useMutation({
+    mutationFn: (...payload: Parameters<typeof driver.bulkDownload>) => {
+      return driver.bulkDownload(...payload)
+    },
+  })
+}
