@@ -128,6 +128,7 @@ class ItemPermission(permissions.BasePermission):
             "trashbin",
             "search",
             "deletion_info",
+            "bulk_download",
         ]
 
     def has_object_permission(self, request, view, obj):
