@@ -2170,8 +2170,18 @@ class ItemViewSet(
         """
         serializer = serializers.ItemBulkDownloadSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        item_ids = serializer.validated_data["ids"]
+        items = models.Item.objects.filter(id__in=item_ids)
+        allowed_ids = []
 
-        return drf.response.Response(status=status.HTTP_200_OK, data=serializer.data)
+        for item in items:
+            if item.get_abilities(request.user).get("bulk_download", False):
+                allowed_ids.append(item.id)
+
+        if not allowed_ids:
+            raise drf.exceptions.NotFound()
+
+        return drf.response.Response({"ids": allowed_ids})
 
     @drf.decorators.action(detail=True, methods=["get"], url_path="export")
     def export(self, request, *args, **kwargs):

@@ -209,6 +209,10 @@ class ItemAbilities:  # pylint: disable=too-many-public-methods,too-many-instanc
         """Return whether the user can mark an upload on the item as ended."""
         return self.can_update() and self.user.is_authenticated
 
+    def can_bulk_download(self) -> bool:
+        """Return whether the user can bulk download n items."""
+        return self.user.is_authenticated and self.can_get()
+
     def as_dict(self) -> dict[str, bool | dict[str, list[str]]]:
         """Return the ability mapping exposed by the API."""
         return {
@@ -219,6 +223,7 @@ class ItemAbilities:  # pylint: disable=too-many-public-methods,too-many-instanc
             "children_create": self.can_create_children(),
             "destroy": self.can_destroy(),
             "download": self.can_get(),
+            "bulk_download": self.can_bulk_download(),
             "duplicate": self.can_duplicate(),
             "export": self.can_export(),
             "hard_delete": self.can_hard_delete(),
